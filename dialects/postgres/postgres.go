@@ -1,30 +1,31 @@
 package postgres
 
 import (
+	"database/sql"
 	"database/sql/driver"
 
 	"encoding/json"
 	"errors"
 	"fmt"
 
-	"github.com/jackc/pgtype"
-	_ "github.com/jackc/pgx/v4/stdlib"
+	_ "github.com/lib/pq"
+	"github.com/lib/pq/hstore"
 )
 
 type Hstore map[string]*string
 
 // Value get value of Hstore
 func (h Hstore) Value() (driver.Value, error) {
-	hstore := pgtype.Hstore{Map: map[string]pgtype.Text{}}
+	hstore := hstore.Hstore{Map: map[string]sql.NullString{}}
 	if len(h) == 0 {
 		return nil, nil
 	}
 
 	for key, value := range h {
-		s := pgtype.Text{Status: pgtype.Null}
+		var s sql.NullString
 		if value != nil {
 			s.String = *value
-			s.Status = pgtype.Present
+			s.Valid = true
 		}
 		hstore.Map[key] = s
 	}
@@ -33,7 +34,7 @@ func (h Hstore) Value() (driver.Value, error) {
 
 // Scan scan value into Hstore
 func (h *Hstore) Scan(value interface{}) error {
-	hstore := pgtype.Hstore{}
+	hstore := hstore.Hstore{}
 
 	if err := hstore.Scan(value); err != nil {
 		return err
@@ -45,7 +46,7 @@ func (h *Hstore) Scan(value interface{}) error {
 
 	*h = Hstore{}
 	for k := range hstore.Map {
-		if hstore.Map[k].Status == pgtype.Present {
+		if hstore.Map[k].Valid {
 			s := hstore.Map[k].String
 			(*h)[k] = &s
 		} else {
