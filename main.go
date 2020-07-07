@@ -34,6 +34,8 @@ type DB struct {
 
 	// function to be used to override the creating of a new timestamp
 	nowFuncOverride func() time.Time
+
+	Synchronized bool
 }
 
 type logModeValue int
@@ -564,6 +566,7 @@ func (s *DB) BeginTx(ctx context.Context, opts *sql.TxOptions) *DB {
 
 		c.dialect.SetDB(c.db)
 		c.AddError(err)
+		c.Synchronized = true
 	} else {
 		c.AddError(ErrCantStartTransaction)
 	}

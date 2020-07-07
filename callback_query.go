@@ -15,6 +15,11 @@ func init() {
 
 // queryCallback used to query data from database
 func queryCallback(scope *Scope) {
+	if scope.db.Synchronized {
+		scope.db.Lock()
+		defer scope.db.Unlock()
+	}
+
 	if _, skip := scope.InstanceGet("gorm:skip_query_callback"); skip {
 		return
 	}

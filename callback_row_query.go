@@ -22,6 +22,10 @@ type RowsQueryResult struct {
 // queryCallback used to query data from database
 func rowQueryCallback(scope *Scope) {
 	if result, ok := scope.InstanceGet("row_query_result"); ok {
+		if scope.db.Synchronized {
+			scope.db.Lock()
+			defer scope.db.Unlock()
+		}
 		scope.prepareQuerySQL()
 
 		if str, ok := scope.Get("gorm:query_hint"); ok {

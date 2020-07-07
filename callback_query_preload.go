@@ -184,6 +184,10 @@ func (scope *Scope) handleHasOnePreload(field *Field, conditions []interface{}) 
 
 // handleHasManyPreload used to preload has many associations
 func (scope *Scope) handleHasManyPreload(field *Field, conditions []interface{}) {
+	if scope.db.Synchronized {
+		scope.db.Lock()
+		defer scope.db.Unlock()
+	}
 	relation := field.Relationship
 
 	// get relations's primary keys
