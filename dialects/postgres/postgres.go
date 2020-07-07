@@ -8,7 +8,7 @@ import (
 	"fmt"
 
 	"github.com/jackc/pgtype"
-	_ "github.com/jackc/pgx/v4"
+	_ "github.com/jackc/pgx/v4/stdlib"
 )
 
 type Hstore map[string]*string
