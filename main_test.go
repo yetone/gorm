@@ -24,6 +24,7 @@ import (
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mssql"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
+	_ "github.com/jinzhu/gorm/dialects/pgx"
 	"github.com/jinzhu/gorm/dialects/postgres"
 	_ "github.com/jinzhu/gorm/dialects/sqlite"
 	"github.com/jinzhu/now"
@@ -53,6 +54,12 @@ func OpenTestConnection() (db *gorm.DB, err error) {
 			dbDSN = "gorm:gorm@tcp(localhost:9910)/gorm?charset=utf8&parseTime=True"
 		}
 		db, err = gorm.Open("mysql", dbDSN)
+	case "pgx":
+		fmt.Println("testing pgx...")
+		if dbDSN == "" {
+			dbDSN = "user=gorm password=gorm DB.name=gorm port=9920 sslmode=disable statement_cache_capacity=0"
+		}
+		db, err = gorm.Open("pgx", dbDSN)
 	case "postgres":
 		fmt.Println("testing postgres...")
 		if dbDSN == "" {

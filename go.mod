@@ -10,5 +10,7 @@ require (
 	github.com/jackc/pgx/v4 v4.7.1
 	github.com/jinzhu/inflection v1.0.0
 	github.com/jinzhu/now v1.0.1
+	github.com/lib/pq v1.3.0
 	github.com/mattn/go-sqlite3 v1.14.0
+	github.com/pkg/errors v0.8.1
 )
